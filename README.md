@@ -1,5 +1,5 @@
 # BlipKit
-Unity native middle-ware/integration tool for audio.
+A native audio middle-ware tool.
 
 Authors: 
 <br>\- Angel Rodriguez Lozada

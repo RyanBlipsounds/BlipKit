@@ -1,0 +1,21 @@
+{
+    "name": "com.blipsounds.blipkit",
+    "version": "0.1.0",
+    "displayName": "BlipKit",
+    "description": "A native audio middle-ware tool",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/RyanBlipsounds/BlipKit.git"
+    },
+    "unity": "2020.3",
+    "keywords": [
+        "blipkit",
+        "blipsounds",
+        "audio"
+    ],
+    "author": {
+    "name": "Blipsounds",
+    "email": "angelrodriguez@blipsounds.com",
+    "url": "https://blipsounds.com/"
+    }
+  }
