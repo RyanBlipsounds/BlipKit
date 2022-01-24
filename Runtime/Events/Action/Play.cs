@@ -24,6 +24,13 @@ namespace Blip
                     emitters[emitterIndex].PlayClip(Clip);
                 }
             }
+
+            public override void ApplyToSingleAudioSource(AudioSource audioSource)
+            {
+                audioSource.clip = Clip;
+                audioSource.Play();
+                // Note: We may want this split up for more control from Actions.
+            }
         }
 
 #if UNITY_EDITOR

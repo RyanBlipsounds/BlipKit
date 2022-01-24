@@ -17,13 +17,19 @@ namespace Blip
             None,
             Play,
             PlayFromRandomSet,
-            Stop
+            Stop,
+            StopAllInEvent,
+            HighPassFilter,
+            LowPassFilter
         }
 
         public ActionType Type;
         public Action.Play OptionsPlay;
         public Action.PlayFromRandomSet OptionsPlayFromRandomSet;
         public Action.Stop OptionsStop;
+        public Action.StopAllInEvent OptionsStopAllInEvent;
+        public Action.HighPassFilter OptionsHighPassFilter;
+        public Action.LowPassFilter OptionsLowPassFilter;
 
         public void Apply(BlipEmitter[] emitters, ref int emitterIndex)
         {
@@ -34,6 +40,13 @@ namespace Blip
             if (NeedsEmitter()) emitterIndex++;
         }
 
+        public void ApplyToSingleAudioSource(AudioSource audioSource)
+        {
+            if (Type == ActionType.None) return;
+
+            GetAction().ApplyToSingleAudioSource(audioSource);
+        }
+
         public BlipAction GetAction()
         {
             switch (Type)
@@ -41,6 +54,9 @@ namespace Blip
                 case ActionType.Play: return OptionsPlay;
                 case ActionType.PlayFromRandomSet: return OptionsPlayFromRandomSet;
                 case ActionType.Stop: return OptionsStop;
+                case ActionType.StopAllInEvent: return OptionsStopAllInEvent;
+                case ActionType.HighPassFilter: return OptionsHighPassFilter;
+                case ActionType.LowPassFilter: return OptionsLowPassFilter;
             }
 
             return null;

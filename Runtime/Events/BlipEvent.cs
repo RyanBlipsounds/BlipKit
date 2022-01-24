@@ -3,9 +3,9 @@ using UnityEngine;
 namespace Blip
 {
     /**
-     * A BlipEvent is a group of IBlipActionable classes which when the BlipEvent is activated, all
-     * component IBlipActionable actions in the event are applied to the target BlipEmitter in 
-     * order.
+     * A BlipEvent is a group of IBlipActionables and built-in modifiers, which when the BlipEvent 
+     * is activated, all component IBlipActionable actions in the event are applied to the target 
+     * BlipEmitter in order.
      */ 
     [CreateAssetMenu(fileName = "BlipEvent", menuName = "BlipKit/Event", order = 0)]
     public class BlipEvent : ScriptableObject
@@ -26,15 +26,28 @@ namespace Blip
         public BlipActionContainer[] Actions;
 
         [Space(10)]
+        [Header("Modifiers")]
+
+        [Range(0f, 1f)]
+        public float Volume = 1f;
+
+        [Tooltip("Pitch adjustment in cents of a semitone.")]
+        [Range(-2400, 2400)]
+        public int PitchAdjust = 0;
+
+        [Space(10)]
 
         public AttenuationSettings attenuationSettings;
 
-        public void Play2D(float volume = 1f)
+        #region Public Methods
+        
+        public void Play2D()
         {
             BlipEmitter[] emitters = Statics.RequestEmitters(GetEmitterCount(), priority);
 
             foreach (BlipEmitter emitter in emitters)
             {
+                emitter.Reset();
                 emitter.AttachTo(Statics.GetListenerGameobject());
             }
 
@@ -44,16 +57,22 @@ namespace Blip
                 action.Apply(emitters, ref emitterIndex);
             }
 
-            Statics.SetEmitterVolume(emitters, volume);
-            ApplySpatial2D(emitters);
+            Statics.SetEmitterVolume(emitters, Volume);
+            Statics.SetEmitterPitch(emitters, PitchAdjust);
+
+            for (int i=0; i<emitters.Length; i++)
+            {
+                ApplySpatial2DToAudioSource(emitters[i].GetSource());
+            }
         }
 
-        public void PlayAtPosition(Vector3 position, float volume = 1f)
+        public void PlayAtPosition(Vector3 position)
         {            
             BlipEmitter[] emitters = Statics.RequestEmitters(GetEmitterCount(), priority);
 
             foreach (BlipEmitter emitter in emitters)
             {
+                emitter.Reset();
                 emitter.GoToPosition(position);
             }
 
@@ -63,16 +82,22 @@ namespace Blip
                 action.Apply(emitters, ref emitterIndex);
             }
 
-            Statics.SetEmitterVolume(emitters, volume);
-            ApplySpatial(emitters);
+            Statics.SetEmitterVolume(emitters, Volume);
+            Statics.SetEmitterPitch(emitters, PitchAdjust);
+
+            for (int i=0; i<emitters.Length; i++)
+            {
+                ApplySpatialToAudioSource(emitters[i].GetSource());
+            }
         }
 
-        public void PlayAttached(GameObject objectToAttach, float volume = 1f)
+        public void PlayAttached(GameObject objectToAttach)
         {
             BlipEmitter[] emitters = Statics.RequestEmitters(GetEmitterCount(), priority);
 
             foreach (BlipEmitter emitter in emitters)
             {
+                emitter.Reset();
                 emitter.AttachTo(objectToAttach);
             }
 
@@ -82,32 +107,44 @@ namespace Blip
                 action.Apply(emitters, ref emitterIndex);
             }
 
-            Statics.SetEmitterVolume(emitters, volume);
-            ApplySpatial(emitters);
-        }
+            Statics.SetEmitterVolume(emitters, Volume);
+            Statics.SetEmitterPitch(emitters, PitchAdjust);
 
-        private void ApplySpatial(BlipEmitter[] emitters)
-        {
             for (int i=0; i<emitters.Length; i++)
             {
-                AudioSource audioSource = emitters[i].GetSource();
-
-                audioSource.spatialize = attenuationSettings.AttenuationAmount <= 0f;
-                audioSource.spatialBlend = attenuationSettings.AttenuationAmount;
-                audioSource.minDistance = attenuationSettings.MinDistance;
-                audioSource.maxDistance = attenuationSettings.MaxDistance;
+                ApplySpatialToAudioSource(emitters[i].GetSource());
             }
         }
 
-        private void ApplySpatial2D(BlipEmitter[] emitters)
+        public void PlayOnSingleSource(AudioSource audioSource)
         {
-            for (int i=0; i<emitters.Length; i++)
+            foreach (BlipActionContainer action in Actions)
             {
-                AudioSource audioSource = emitters[i].GetSource();
-
-                audioSource.spatialBlend = 0f;
-                audioSource.spatialize = false;
+                action.ApplyToSingleAudioSource(audioSource);
             }
+
+            audioSource.volume = Volume;
+            audioSource.pitch = (float)Statics.PitchAsUnityRange(PitchAdjust);
+
+            ApplySpatial2DToAudioSource(audioSource);
+        }
+
+        #endregion
+
+        #region Private Methods
+
+        private void ApplySpatialToAudioSource(AudioSource audioSource)
+        {
+            audioSource.spatialize = attenuationSettings.AttenuationAmount <= 0f;
+            audioSource.spatialBlend = attenuationSettings.AttenuationAmount;
+            audioSource.minDistance = attenuationSettings.MinDistance;
+            audioSource.maxDistance = attenuationSettings.MaxDistance;
+        }
+
+        private void ApplySpatial2DToAudioSource(AudioSource audioSource)
+        {
+            audioSource.spatialBlend = 0f;
+            audioSource.spatialize = false;
         }
 
         private int GetEmitterCount()
@@ -124,5 +161,7 @@ namespace Blip
 
             return emittersNeeded;
         }
+
+        #endregion
     }
 }

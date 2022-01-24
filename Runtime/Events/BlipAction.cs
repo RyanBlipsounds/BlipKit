@@ -14,5 +14,7 @@ namespace Blip
         public virtual bool NeedsEmitter { get { return false; } }
 
         public abstract void Apply(BlipEmitter[] emitters, int emitterIndex);
+
+        public abstract void ApplyToSingleAudioSource(AudioSource audioSource);
     }
 }

@@ -11,14 +11,11 @@ namespace Blip
     namespace Action
     {
         [System.Serializable]
-        public class Stop : BlipAction
+        public class StopAllInEvent : BlipAction
         {
-            public AudioClip Clip;
-
             public override void Apply(BlipEmitter[] emitters, int emitterIndex)
             {
-                if (emitters[emitterIndex] != null && 
-                    emitters[emitterIndex].GetSource().clip == Clip)
+                if (emitters[emitterIndex] != null)
                 {
                     emitters[emitterIndex].Stop();
                 }
@@ -26,39 +23,24 @@ namespace Blip
 
             public override void ApplyToSingleAudioSource(AudioSource audioSource)
             {
-                if (audioSource.clip == Clip)
-                {
-                    audioSource.Stop();
-                }
+                audioSource.Stop();
             }
         }
 
 #if UNITY_EDITOR
-        [CustomPropertyDrawer(typeof(Stop))]
-        public class BlipActionStopInspector : PropertyDrawer
+        [CustomPropertyDrawer(typeof(StopAllInEvent))]
+        public class BlipActionStopAllInEventInspector : PropertyDrawer
         {
             public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
             {
                 EditorGUI.BeginProperty(position, label, property);
-
-                EditorGUI.PropertyField
-                (
-                    new Rect(position.x, position.y, position.width, 20f), 
-                    property.FindPropertyRelative("Clip"), 
-                    label
-                );
 
                 EditorGUI.EndProperty();
             }
 
             public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
             {
-                SerializedProperty clipProperty = property.FindPropertyRelative("Clip");
-
-                float totalHeight = 0;
-                totalHeight += EditorGUI.GetPropertyHeight(clipProperty);
-
-                return totalHeight;
+                return 0f;
             }
         }
 #endif

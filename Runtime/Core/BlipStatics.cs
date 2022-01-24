@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -25,7 +26,7 @@ namespace Blip
             Debug.Log("[BlipKit] Initialized.");
         }
 
-        public static void PlayEvent2D(string eventName, float volume=1f)
+        public static void PlayEvent2D(string eventName)
         {
             if (!isInitialized)
             {
@@ -37,7 +38,7 @@ namespace Blip
             BlipEvent targetEvent = Bank.FindEvent(eventName);
             if (targetEvent != null)
             {
-                targetEvent.Play2D(volume);
+                targetEvent.Play2D();
             }
             else
             {
@@ -45,7 +46,7 @@ namespace Blip
             }
         }
 
-        public static void PlayEvent2D(BlipEvent eventReference, float volume=1f)
+        public static void PlayEvent2D(BlipEvent eventReference)
         {
             if (!isInitialized)
             {
@@ -54,10 +55,10 @@ namespace Blip
                 return;
             }
 
-            eventReference.Play2D(volume);
+            eventReference.Play2D();
         }
 
-        public static void PlayEventAtPosition(string eventName, Vector3 position, float volume=1f)
+        public static void PlayEventAtPosition(string eventName, Vector3 position)
         {
             if (!isInitialized)
             {
@@ -69,7 +70,7 @@ namespace Blip
             BlipEvent targetEvent = Bank.FindEvent(eventName);
             if (targetEvent != null)
             {
-                PlayEventAtPosition(targetEvent, position, volume);
+                PlayEventAtPosition(targetEvent, position);
             }
             else
             {
@@ -77,7 +78,7 @@ namespace Blip
             }
         }
 
-        public static void PlayEventAtPosition(BlipEvent eventReference, Vector3 position, float volume=1f)
+        public static void PlayEventAtPosition(BlipEvent eventReference, Vector3 position)
         {
             if (!isInitialized)
             {
@@ -86,10 +87,10 @@ namespace Blip
                 return;
             }
 
-            eventReference.PlayAtPosition(position, volume);
+            eventReference.PlayAtPosition(position);
         }
 
-        public static void PlayEventAttached(string eventName, GameObject objectToAttach, float volume=1f)
+        public static void PlayEventAttached(string eventName, GameObject objectToAttach)
         {
             if (!isInitialized)
             {
@@ -101,7 +102,7 @@ namespace Blip
             BlipEvent targetEvent = Bank.FindEvent(eventName);
             if (targetEvent != null)
             {
-                PlayEventAttached(targetEvent, objectToAttach, volume);
+                PlayEventAttached(targetEvent, objectToAttach);
             }
             else
             {
@@ -109,7 +110,7 @@ namespace Blip
             }
         }
 
-        public static void PlayEventAttached(BlipEvent eventReference, GameObject objectToAttach, float volume=1f)
+        public static void PlayEventAttached(BlipEvent eventReference, GameObject objectToAttach)
         {
             if (!isInitialized)
             {
@@ -118,7 +119,7 @@ namespace Blip
                 return;
             }
 
-            eventReference.PlayAttached(objectToAttach, volume);
+            eventReference.PlayAttached(objectToAttach);
         }
 
         public static void SetEmitterVolume(BlipEmitter[] emitters, float volume)
@@ -129,6 +130,56 @@ namespace Blip
             }
         }
 
+        public static void SetEmitterPitch(BlipEmitter[] emitters, double pitchAdjust)
+        {
+            foreach (BlipEmitter emitter in emitters)
+            {
+                // Possibly truncates some accuracy here. The + 1.0 is because Unity's pitch is
+                // a multiplicative state, not just an adjustment. A pitch of 0 cents (no change)
+                // must be a pitch of 1.0 in a Unity audio source (* 1 = no change).
+                emitter.GetSource().pitch = (float)PitchAsUnityRange(pitchAdjust);   
+            }
+        }
+
+        public static double PitchAsUnityRange(double pitchInCentsOfSemitone)
+        {
+            // Notes (Angel: 2022.01.07):
+            // A cent of a semitone corresponds to multiplying the frequency by 
+            // 0.000594630943592952645618252949463... (or 2^(1/12)/100).
+            // Tested with a tuning note (A, 440Hz) and a microphone-based guitar tuner on a pair
+            // of headphones. The first few semitones in either direction are exactly on tune but 
+            // subsequent semitones (3+, or a value of 300+ cents of a semitone) the physical tuner 
+            // began to see the target note as increasingly off key. This is a subtle effect, and 
+            // trying to tune for a further note then detunes the closer notes. I'm not sure if  
+            // this is an effect of multication present in either this algorithm or Unity's, or  
+            // perhaps it's an accuracy or rounding issue, or perhaps it's an effect of the tuner 
+            // or speakers or sample I used. In any case, the value being used here is the 
+            // mathematically "correct" value that's supposed to work, and does in tests.
+            // This likely won't need to be revisted but I wanted to note it here in case.
+
+            // Clamping pitch to -2400f to 2400f would go here, to match Wwise, but unnecessary 
+            // since values outside the range are still handled correctly. Currently only enforced
+            // by the range in the BlipEvent inspector slider for PitchAdjustment.
+
+            // Modify pitch between -2400f and 2400f (cents of a semitone). Remaps this to Unity's 
+            // multiplicative frequency (0 to 3f, meaning a max where the frequency is multiplied 
+            // by 3). 1 is therefore added to this adjustment value when applied to the audio 
+            // source, as an adjustment of 0 here should result in a value of 1 in the AudioSource
+            // (no change).
+            if (pitchInCentsOfSemitone > 0.0)
+            {
+                // A max value of 2400 cents becomes 2.427114.
+                return (pitchInCentsOfSemitone * 0.000594630943592952645618252949463) + 1.0; 
+            }
+            else if (pitchInCentsOfSemitone < 0.0)
+            {
+                // A min value of -2400 cents becomes 0.4120119.
+                return 1.0 / (1.0 + -pitchInCentsOfSemitone * 0.000594630943592952645618252949463);
+            }
+
+            // Pitch adjustment of 0 is no change (1.0 in Unity audio source).
+            return 1.0;
+        }
         public static AudioListener GetListener()
         {
             if (activeListener == null) return null;

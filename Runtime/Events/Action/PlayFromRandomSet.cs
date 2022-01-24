@@ -30,6 +30,21 @@ namespace Blip
             {
                 if (emitters[emitterIndex] == null) return;
 
+                int randomPick = RollForIndex();
+
+                emitters[emitterIndex].PlayClip(Clips[randomPick]);
+            }
+
+            public override void ApplyToSingleAudioSource(AudioSource audioSource)
+            {
+                int randomPick = RollForIndex();
+
+                audioSource.clip = Clips[randomPick];
+                audioSource.Play();
+            }
+
+            private int RollForIndex()
+            {
                 int randomPick = Random.Range(0, Clips.Length);;
 
                 if (PreventDuplicatePicks && Clips.Length > 1)
@@ -42,7 +57,7 @@ namespace Blip
 
                 lastPick = randomPick;
 
-                emitters[emitterIndex].PlayClip(Clips[randomPick]);
+                return lastPick;
             }
         }
 

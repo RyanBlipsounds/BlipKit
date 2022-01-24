@@ -32,6 +32,18 @@ namespace Blip
                 case BlipActionContainer.ActionType.Stop: 
                     totalHeight += EditorGUI.GetPropertyHeight(property.FindPropertyRelative("OptionsStop"));
                     break;
+
+                case BlipActionContainer.ActionType.StopAllInEvent: 
+                    totalHeight += EditorGUI.GetPropertyHeight(property.FindPropertyRelative("OptionsStopAllInEvent"));
+                    break;
+
+                case BlipActionContainer.ActionType.HighPassFilter: 
+                    totalHeight += EditorGUI.GetPropertyHeight(property.FindPropertyRelative("OptionsHighPassFilter"));
+                    break;
+
+                case BlipActionContainer.ActionType.LowPassFilter: 
+                    totalHeight += EditorGUI.GetPropertyHeight(property.FindPropertyRelative("OptionsLowPassFilter"));
+                    break;
             }
 
             return totalHeight +30f;
@@ -73,6 +85,18 @@ namespace Blip
                 case BlipActionContainer.ActionType.Stop:
                     Draw_Stop(position, property);
                     break;
+
+                case BlipActionContainer.ActionType.StopAllInEvent:
+                    Draw_StopAllInEvent(position, property);
+                    break;
+
+                case BlipActionContainer.ActionType.HighPassFilter:
+                    Draw_HighPassFilter(position, property);
+                    break;
+
+                case BlipActionContainer.ActionType.LowPassFilter:
+                    Draw_LowPassFilter(position, property);
+                    break;
             }
 
             EditorGUI.EndProperty();
@@ -110,6 +134,35 @@ namespace Blip
             (
                 new Rect(position.x, position.y + 20f, position.width, 20f), 
                 property.FindPropertyRelative("OptionsStop"), 
+                GUIContent.none
+            );
+        }
+
+        private void Draw_StopAllInEvent(Rect position, SerializedProperty property)
+        {
+            position.height += 10f;
+        }
+
+        private void Draw_HighPassFilter(Rect position, SerializedProperty property)
+        {
+            position.height += 40f;
+
+            EditorGUI.PropertyField
+            (
+                new Rect(position.x, position.y + 20f, position.width, 20f), 
+                property.FindPropertyRelative("OptionsHighPassFilter"), 
+                GUIContent.none
+            );
+        }
+
+        private void Draw_LowPassFilter(Rect position, SerializedProperty property)
+        {
+            position.height += 40f;
+
+            EditorGUI.PropertyField
+            (
+                new Rect(position.x, position.y + 20f, position.width, 20f), 
+                property.FindPropertyRelative("OptionsLowPassFilter"), 
                 GUIContent.none
             );
         }

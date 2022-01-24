@@ -12,9 +12,17 @@ namespace Blip
         private bool isRequested = false;
         private int activePriority = -1;
 
+        [HideInInspector]
+        public AudioHighPassFilter HighPassFilter;
+
+        [HideInInspector]
+        public AudioLowPassFilter LowPassFilter;
+
         private void Awake()
         {
             audioSource = gameObject.AddComponent<AudioSource>();
+            HighPassFilter = gameObject.AddComponent<AudioHighPassFilter>();
+            LowPassFilter = gameObject.AddComponent<AudioLowPassFilter>();
         }
 
         private void LateUpdate()
@@ -84,6 +92,8 @@ namespace Blip
 
         public void PlayClip(AudioClip clip)
         {
+            Reset();
+
             audioSource.clip = clip;
             audioSource.Play();
             // Note: We may want this split up for more control from Actions.
@@ -92,9 +102,40 @@ namespace Blip
             isActive = true;
         }
 
+        public void Stop()
+        {
+            audioSource.Stop();
+            isActive = false;
+        }
+
         public AudioSource GetSource()
         {
             return audioSource;
+        }
+
+        public void Reset()
+        {
+            LowPassFilter.enabled = false;
+            HighPassFilter.enabled = false;
+        }
+
+        public void SetLowPassFilter(float cutoffFrequency, float resonanceQ)
+        {            
+            LowPassFilter.cutoffFrequency = cutoffFrequency;
+            LowPassFilter.lowpassResonanceQ = resonanceQ;
+
+            LowPassFilter.enabled = true;
+
+            Debug.Log("Cutoff is: " + LowPassFilter.cutoffFrequency);
+        }
+        public void SetHighPassFilter(float cutoffFrequency, float resonanceQ)
+        {
+            HighPassFilter.cutoffFrequency = cutoffFrequency;
+            HighPassFilter.highpassResonanceQ = resonanceQ;
+
+            HighPassFilter.enabled = true;
+
+            Debug.Log("Cutoff is: " + HighPassFilter.cutoffFrequency);
         }
 
         public void DestroySelf()

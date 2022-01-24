@@ -6,6 +6,8 @@ namespace Blip
     {
         private static AudioSource editorPreviewAudioSource = null;
 
+        public static bool IsPlaying = false;
+
         private static AudioSource CreatePreviewAudioSource()
         {
             GameObject PreviewAudioSourceObject = new GameObject("Preview Emitter [BlipKitEditor]");
@@ -32,21 +34,29 @@ namespace Blip
             return editorPreviewAudioSource;
         }
 
-        public static void PlayClipInPreviewAudioSource
-        (
-            AudioClip clip, 
-            float volume=1f, 
-            float pitch =1f,
-            bool isLooping = false
-        )
+        public static void PlayEventInPreviewAudioSource(BlipEvent eventToPlay)
         {
             AudioSource audioSource = GetPreviewAudioSource();
+            
+            // This is handled mare gracefully by the emitters in their Reset() called before an event plays.
+            var lowPassFilterComponent = audioSource.gameObject.GetComponent<AudioLowPassFilter>();
+            var highPassFilterComponent = audioSource.gameObject.GetComponent<AudioHighPassFilter>();
 
-            audioSource.clip = clip;
-            audioSource.volume = volume;
-            audioSource.pitch = pitch;
-            audioSource.loop = isLooping;
-            audioSource.Play();
+            if (!lowPassFilterComponent)
+            {
+                lowPassFilterComponent = audioSource.gameObject.AddComponent<AudioLowPassFilter>();
+            }
+            if (!highPassFilterComponent)
+            {
+                highPassFilterComponent = audioSource.gameObject.AddComponent<AudioHighPassFilter>();
+            }
+
+            lowPassFilterComponent.enabled = false;
+            highPassFilterComponent.enabled = false;
+
+            eventToPlay.PlayOnSingleSource(audioSource);
+
+            IsPlaying = true;
         }
 
         public static void StopPreviewAudioSource()
@@ -54,6 +64,8 @@ namespace Blip
             AudioSource audioSource = GetPreviewAudioSource();
 
             audioSource.Stop();
+            
+            IsPlaying = false;
         }
     }
 }

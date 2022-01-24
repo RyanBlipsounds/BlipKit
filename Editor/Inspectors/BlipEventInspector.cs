@@ -7,7 +7,6 @@ namespace Blip
     [CustomEditor(typeof(BlipEvent))]
     public class EventEditor : Editor
     {
-
         public override void OnInspectorGUI()
         {
             BlipEvent targetEvent = (BlipEvent)target;
@@ -15,13 +14,22 @@ namespace Blip
             serializedObject.Update();
 
             if(GUILayout.Button("Hear It"))
-            {         
-                // TODO
-                Debug.Log("Not yet implemented.");
-                //EditorStatics.PlayClipInPreviewAudioSource();    
+            {
+                EditorStatics.PlayEventInPreviewAudioSource(targetEvent);   
             }
 
-            GUILayout.Space(10f);
+            if (EditorStatics.IsPlaying)
+            {
+                if(GUILayout.Button("Stop"))
+                {
+                    EditorStatics.StopPreviewAudioSource();
+                }
+                GUILayout.Space(5f);
+            }
+            else
+            {
+                GUILayout.Space(26f);
+            }
 
             DrawDefaultInspector();
         }
