@@ -40,8 +40,13 @@ namespace Blip
         public AttenuationSettings attenuationSettings;
 
         #region Public Methods
-        
+
         public void Play2D()
+        {
+            Play2D(Volume);
+        }
+        
+        public void Play2D(float volume)
         {
             BlipEmitter[] emitters = Statics.RequestEmitters(GetEmitterCount(), priority);
 
@@ -57,7 +62,7 @@ namespace Blip
                 action.Apply(emitters, ref emitterIndex);
             }
 
-            Statics.SetEmitterVolume(emitters, Volume);
+            Statics.SetEmitterVolume(emitters, volume);
             Statics.SetEmitterPitch(emitters, PitchAdjust);
 
             for (int i=0; i<emitters.Length; i++)
@@ -68,6 +73,11 @@ namespace Blip
 
         public void PlayAtPosition(Vector3 position)
         {            
+            PlayAtPosition(position, Volume);
+        }
+
+        public void PlayAtPosition(Vector3 position, float volume)
+        {
             BlipEmitter[] emitters = Statics.RequestEmitters(GetEmitterCount(), priority);
 
             foreach (BlipEmitter emitter in emitters)
@@ -82,7 +92,7 @@ namespace Blip
                 action.Apply(emitters, ref emitterIndex);
             }
 
-            Statics.SetEmitterVolume(emitters, Volume);
+            Statics.SetEmitterVolume(emitters, volume);
             Statics.SetEmitterPitch(emitters, PitchAdjust);
 
             for (int i=0; i<emitters.Length; i++)
@@ -92,6 +102,11 @@ namespace Blip
         }
 
         public void PlayAttached(GameObject objectToAttach)
+        {
+            PlayAttached(objectToAttach, Volume);
+        }
+
+        public void PlayAttached(GameObject objectToAttach, float volume)
         {
             BlipEmitter[] emitters = Statics.RequestEmitters(GetEmitterCount(), priority);
 
@@ -107,7 +122,7 @@ namespace Blip
                 action.Apply(emitters, ref emitterIndex);
             }
 
-            Statics.SetEmitterVolume(emitters, Volume);
+            Statics.SetEmitterVolume(emitters, volume);
             Statics.SetEmitterPitch(emitters, PitchAdjust);
 
             for (int i=0; i<emitters.Length; i++)
@@ -118,12 +133,17 @@ namespace Blip
 
         public void PlayOnSingleSource(AudioSource audioSource)
         {
+            PlayOnSingleSource(audioSource, Volume);
+        }
+
+        public void PlayOnSingleSource(AudioSource audioSource, float volume)
+        {
             foreach (BlipActionContainer action in Actions)
             {
                 action.ApplyToSingleAudioSource(audioSource);
             }
 
-            audioSource.volume = Volume;
+            audioSource.volume = volume;
             audioSource.pitch = (float)Statics.PitchAsUnityRange(PitchAdjust);
 
             ApplySpatial2DToAudioSource(audioSource);

@@ -119,6 +119,22 @@ namespace Blip
             HighPassFilter.enabled = false;
         }
 
+        public void SetVolume(float volume)
+        {
+            audioSource.volume = volume;
+        }
+
+        public void SetPitchUnity(float pitch)
+        {
+            audioSource.pitch = pitch;
+        }
+
+        // Sets pitch by converting cents of semitone to Unity pitch.
+        public void SetPitch(float pitchCentsOfSemitone)
+        {
+            audioSource.pitch = (float)Statics.PitchAsUnityRange(pitchCentsOfSemitone);
+        }
+
         public void SetLowPassFilter(float cutoffFrequency, float resonanceQ)
         {            
             LowPassFilter.cutoffFrequency = cutoffFrequency;
