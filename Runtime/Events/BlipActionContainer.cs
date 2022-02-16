@@ -15,8 +15,8 @@ namespace Blip
         public enum ActionType
         {
             None,
-            PlayClip,
-            PlayClipFromRandomSet,
+            Play,
+            PlayFromRandomSet,
             GlobalStopEvent,
             GlobalStopAllEvents,
             HighPassFilter,
@@ -24,8 +24,8 @@ namespace Blip
         }
 
         public ActionType Type;
-        public Action.PlayClip OptionsPlayClip;
-        public Action.PlayClipFromRandomSet OptionsPlayClipFromRandomSet;
+        public Action.Play OptionsPlay;
+        public Action.PlayFromRandomSet OptionsPlayFromRandomSet;
         public Action.GlobalStopEvent OptionsGlobalStopEvent;
         public Action.GlobalStopAllEvents OptionsGlobalStopAllEvents;
         public Action.HighPassFilter OptionsHighPassFilter;
@@ -51,8 +51,8 @@ namespace Blip
         {
             switch (Type)
             {
-                case ActionType.PlayClip: return OptionsPlayClip;
-                case ActionType.PlayClipFromRandomSet: return OptionsPlayClipFromRandomSet;
+                case ActionType.Play: return OptionsPlay;
+                case ActionType.PlayFromRandomSet: return OptionsPlayFromRandomSet;
                 case ActionType.GlobalStopEvent: return OptionsGlobalStopEvent;
                 case ActionType.GlobalStopAllEvents: return OptionsGlobalStopAllEvents;
                 case ActionType.HighPassFilter: return OptionsHighPassFilter;

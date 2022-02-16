@@ -21,12 +21,12 @@ namespace Blip
 
             switch ((BlipActionContainer.ActionType)actionTypeProperty.intValue)
             {
-                case BlipActionContainer.ActionType.PlayClip:
-                    totalHeight += EditorGUI.GetPropertyHeight(property.FindPropertyRelative("OptionsPlayClip"));
+                case BlipActionContainer.ActionType.Play:
+                    totalHeight += EditorGUI.GetPropertyHeight(property.FindPropertyRelative("OptionsPlay"));
                     break;
 
-                case BlipActionContainer.ActionType.PlayClipFromRandomSet:
-                    totalHeight += EditorGUI.GetPropertyHeight(property.FindPropertyRelative("OptionsPlayClipFromRandomSet"));
+                case BlipActionContainer.ActionType.PlayFromRandomSet:
+                    totalHeight += EditorGUI.GetPropertyHeight(property.FindPropertyRelative("OptionsPlayFromRandomSet"));
                     break;
 
                 case BlipActionContainer.ActionType.GlobalStopEvent: 
@@ -74,12 +74,12 @@ namespace Blip
 
             switch ((BlipActionContainer.ActionType)actionTypeProperty.intValue)
             {
-                case BlipActionContainer.ActionType.PlayClip:
-                    Draw_PlayClip(position, property);
+                case BlipActionContainer.ActionType.Play:
+                    Draw_Play(position, property);
                     break;
 
-                case BlipActionContainer.ActionType.PlayClipFromRandomSet:
-                    Draw_PlayClipFromRandomSet(position, property);
+                case BlipActionContainer.ActionType.PlayFromRandomSet:
+                    Draw_PlayFromRandomSet(position, property);
                     break;
 
                 case BlipActionContainer.ActionType.GlobalStopEvent:
@@ -102,26 +102,26 @@ namespace Blip
             EditorGUI.EndProperty();
         }
 
-        private void Draw_PlayClip(Rect position, SerializedProperty property)
+        private void Draw_Play(Rect position, SerializedProperty property)
         {
             position.height += 40f;
 
             EditorGUI.PropertyField
             (
                 new Rect(position.x, position.y + 20f, position.width, 20f), 
-                property.FindPropertyRelative("OptionsPlayClip"), 
+                property.FindPropertyRelative("OptionsPlay"), 
                 GUIContent.none
             );
         }
 
-        private void Draw_PlayClipFromRandomSet(Rect position, SerializedProperty property)
+        private void Draw_PlayFromRandomSet(Rect position, SerializedProperty property)
         {
             position.height += 40f;
 
             EditorGUI.PropertyField
             (
                 new Rect(position.x, position.y + 20f, position.width, 20f), 
-                property.FindPropertyRelative("OptionsPlayClipFromRandomSet"), 
+                property.FindPropertyRelative("OptionsPlayFromRandomSet"), 
                 GUIContent.none
             );
         }

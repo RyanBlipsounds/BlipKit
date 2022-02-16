@@ -11,7 +11,7 @@ namespace Blip
     namespace Action
     {
         [System.Serializable]
-        public class PlayClipFromRandomSet : BlipAction
+        public class PlayFromRandomSet : BlipAction
         {
             public AudioClip[] Clips;
 
@@ -62,8 +62,8 @@ namespace Blip
         }
 
 #if UNITY_EDITOR
-        [CustomPropertyDrawer(typeof(PlayClipFromRandomSet))]
-        public class BlipActionPlayClipFromRandomSetInspector : PropertyDrawer
+        [CustomPropertyDrawer(typeof(PlayFromRandomSet))]
+        public class BlipActionPlayFromRandomSetInspector : PropertyDrawer
         {
             public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
             {
