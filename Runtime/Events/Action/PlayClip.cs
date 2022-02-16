@@ -11,7 +11,7 @@ namespace Blip
     namespace Action
     {
         [System.Serializable]
-        public class Play : BlipAction
+        public class PlayClip : BlipAction
         {
             public AudioClip Clip;
 
@@ -34,8 +34,8 @@ namespace Blip
         }
 
 #if UNITY_EDITOR
-        [CustomPropertyDrawer(typeof(Play))]
-        public class BlipActionPlayInspector : PropertyDrawer
+        [CustomPropertyDrawer(typeof(PlayClip))]
+        public class BlipActionPlayClipInspector : PropertyDrawer
         {
             public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
             {

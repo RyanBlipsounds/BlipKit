@@ -54,6 +54,7 @@ namespace Blip
             {
                 emitter.Reset();
                 emitter.AttachTo(Statics.GetListenerGameobject());
+                emitter.SetCurrentEventName(name);
             }
 
             int emitterIndex = 0;
@@ -84,6 +85,7 @@ namespace Blip
             {
                 emitter.Reset();
                 emitter.GoToPosition(position);
+                emitter.SetCurrentEventName(name);
             }
 
             int emitterIndex = 0;
@@ -114,6 +116,7 @@ namespace Blip
             {
                 emitter.Reset();
                 emitter.AttachTo(objectToAttach);
+                emitter.SetCurrentEventName(name);
             }
 
             int emitterIndex = 0;

@@ -12,6 +12,8 @@ namespace Blip
         private bool isRequested = false;
         private int activePriority = -1;
 
+        private string currentEventName = null;
+
         [HideInInspector]
         public AudioHighPassFilter HighPassFilter;
 
@@ -137,13 +139,14 @@ namespace Blip
 
         public void SetLowPassFilter(float cutoffFrequency, float resonanceQ)
         {            
-            LowPassFilter.cutoffFrequency = cutoffFrequency;
+            LowPassFilter.cutoffFrequency = cutoffFrequency; 
             LowPassFilter.lowpassResonanceQ = resonanceQ;
 
             LowPassFilter.enabled = true;
 
             Debug.Log("Cutoff is: " + LowPassFilter.cutoffFrequency);
         }
+        
         public void SetHighPassFilter(float cutoffFrequency, float resonanceQ)
         {
             HighPassFilter.cutoffFrequency = cutoffFrequency;
@@ -152,6 +155,23 @@ namespace Blip
             HighPassFilter.enabled = true;
 
             Debug.Log("Cutoff is: " + HighPassFilter.cutoffFrequency);
+        }
+
+        // Called from statics when an emitter plays anything and contains the relevent event name. 
+        // Used to search for emitters.
+        public void SetCurrentEventName(string eventName)
+        {
+            currentEventName = eventName;
+        }
+
+        public string GetCurrentEventName()
+        {
+            if (!isActive)
+            {
+                return null;
+            }
+
+            return currentEventName;
         }
 
         public void DestroySelf()

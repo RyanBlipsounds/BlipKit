@@ -122,6 +122,78 @@ namespace Blip
             eventReference.PlayAttached(objectToAttach);
         }
 
+        // Returns all of the emitters that are active and match the provided target event.
+        // A single event might spawn multiple emitters, but also this will return all emitters
+        // if multiple instances of an event are currently active. It does not currently 
+        // distinguish the instances from one another. 
+        public static List<BlipEmitter> FindEmitters(string eventName)
+        {
+            List<BlipEmitter> result = new List<BlipEmitter>();
+
+            if (eventName == null)
+            {
+                return result;
+            }
+
+            foreach (BlipEmitter emitter in emitters)
+            {
+                if (emitter.GetCurrentEventName() == eventName)
+                {
+                    result.Add(emitter);
+                }
+            }
+
+            return result;
+        }
+
+        public static List<BlipEmitter> FindEmitters(BlipEvent eventReference)
+        {
+            // 'name' should be the BlipEvent (ScriptableObject) file name.
+            return FindEmitters(eventReference.name);
+        }
+
+        // Stops all emitters. takes an optional string array with exception names.
+        public static void StopAllEvents(string[] exceptions = null)
+        {
+            foreach (BlipEmitter emitter in emitters)
+            {
+                if (exceptions == null)
+                {
+                     emitter.Stop();
+                     continue;
+                }
+
+                foreach (string exception in exceptions)
+                {
+                    if (emitter.GetCurrentEventName() != exception)
+                    {
+                        emitter.Stop();
+                    }
+                }
+            }
+        }
+
+        public static void StopEvent(string eventName)
+        {
+            // Search through all active emitters for matching names and stops them all.
+            // An emitters 'CurrentEventName' is set when the emitter is used to play an event, and
+            // contains the name of the event that led to it being played. When statics does any
+            // global action it can search for relevant emitters this way.
+            foreach (BlipEmitter emitter in emitters)
+            {
+                if (emitter.GetCurrentEventName() == eventName)
+                {
+                    emitter.Stop();
+                }
+            }
+        }
+
+        public static void StopEvent(BlipEvent eventReference)
+        {
+            // 'name' should be the BlipEvent (ScriptableObject) file name.
+            StopEvent(eventReference.name);
+        }
+
         public static void SetEmitterVolume(BlipEmitter[] emitters, float volume)
         {
             foreach (BlipEmitter emitter in emitters)

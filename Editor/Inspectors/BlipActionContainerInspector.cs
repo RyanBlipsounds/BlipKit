@@ -21,20 +21,20 @@ namespace Blip
 
             switch ((BlipActionContainer.ActionType)actionTypeProperty.intValue)
             {
-                case BlipActionContainer.ActionType.Play:
-                    totalHeight += EditorGUI.GetPropertyHeight(property.FindPropertyRelative("OptionsPlay"));
+                case BlipActionContainer.ActionType.PlayClip:
+                    totalHeight += EditorGUI.GetPropertyHeight(property.FindPropertyRelative("OptionsPlayClip"));
                     break;
 
-                case BlipActionContainer.ActionType.PlayFromRandomSet:
-                    totalHeight += EditorGUI.GetPropertyHeight(property.FindPropertyRelative("OptionsPlayFromRandomSet"));
+                case BlipActionContainer.ActionType.PlayClipFromRandomSet:
+                    totalHeight += EditorGUI.GetPropertyHeight(property.FindPropertyRelative("OptionsPlayClipFromRandomSet"));
                     break;
 
-                case BlipActionContainer.ActionType.Stop: 
-                    totalHeight += EditorGUI.GetPropertyHeight(property.FindPropertyRelative("OptionsStop"));
+                case BlipActionContainer.ActionType.GlobalStopEvent: 
+                    totalHeight += EditorGUI.GetPropertyHeight(property.FindPropertyRelative("OptionsGlobalStopEvent"));
                     break;
 
-                case BlipActionContainer.ActionType.StopAllInEvent: 
-                    totalHeight += EditorGUI.GetPropertyHeight(property.FindPropertyRelative("OptionsStopAllInEvent"));
+                case BlipActionContainer.ActionType.GlobalStopAllEvents: 
+                    totalHeight += EditorGUI.GetPropertyHeight(property.FindPropertyRelative("OptionsGlobalStopAllEvents"));
                     break;
 
                 case BlipActionContainer.ActionType.HighPassFilter: 
@@ -74,20 +74,20 @@ namespace Blip
 
             switch ((BlipActionContainer.ActionType)actionTypeProperty.intValue)
             {
-                case BlipActionContainer.ActionType.Play:
-                    Draw_Play(position, property);
+                case BlipActionContainer.ActionType.PlayClip:
+                    Draw_PlayClip(position, property);
                     break;
 
-                case BlipActionContainer.ActionType.PlayFromRandomSet:
-                    Draw_PlayFromRandomSet(position, property);
+                case BlipActionContainer.ActionType.PlayClipFromRandomSet:
+                    Draw_PlayClipFromRandomSet(position, property);
                     break;
 
-                case BlipActionContainer.ActionType.Stop:
-                    Draw_Stop(position, property);
+                case BlipActionContainer.ActionType.GlobalStopEvent:
+                    Draw_GlobalStopEvent(position, property);
                     break;
 
-                case BlipActionContainer.ActionType.StopAllInEvent:
-                    Draw_StopAllInEvent(position, property);
+                case BlipActionContainer.ActionType.GlobalStopAllEvents:
+                    Draw_GlobalStopAllEvents(position, property);
                     break;
 
                 case BlipActionContainer.ActionType.HighPassFilter:
@@ -102,43 +102,43 @@ namespace Blip
             EditorGUI.EndProperty();
         }
 
-        private void Draw_Play(Rect position, SerializedProperty property)
+        private void Draw_PlayClip(Rect position, SerializedProperty property)
         {
             position.height += 40f;
 
             EditorGUI.PropertyField
             (
                 new Rect(position.x, position.y + 20f, position.width, 20f), 
-                property.FindPropertyRelative("OptionsPlay"), 
+                property.FindPropertyRelative("OptionsPlayClip"), 
                 GUIContent.none
             );
         }
 
-        private void Draw_PlayFromRandomSet(Rect position, SerializedProperty property)
+        private void Draw_PlayClipFromRandomSet(Rect position, SerializedProperty property)
         {
             position.height += 40f;
 
             EditorGUI.PropertyField
             (
                 new Rect(position.x, position.y + 20f, position.width, 20f), 
-                property.FindPropertyRelative("OptionsPlayFromRandomSet"), 
+                property.FindPropertyRelative("OptionsPlayClipFromRandomSet"), 
                 GUIContent.none
             );
         }
 
-        private void Draw_Stop(Rect position, SerializedProperty property)
+        private void Draw_GlobalStopEvent(Rect position, SerializedProperty property)
         {
             position.height += 40f;
 
             EditorGUI.PropertyField
             (
                 new Rect(position.x, position.y + 20f, position.width, 20f), 
-                property.FindPropertyRelative("OptionsStop"), 
+                property.FindPropertyRelative("OptionsGlobalStopEvent"), 
                 GUIContent.none
             );
         }
 
-        private void Draw_StopAllInEvent(Rect position, SerializedProperty property)
+        private void Draw_GlobalStopAllEvents(Rect position, SerializedProperty property)
         {
             position.height += 10f;
         }

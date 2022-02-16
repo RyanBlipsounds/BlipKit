@@ -11,25 +11,25 @@ namespace Blip
     namespace Action
     {
         [System.Serializable]
-        public class StopAllInEvent : BlipAction
+        public class GlobalStopAllEvents : BlipAction
         {
+            // TODO: Add exceptions.
+
             public override void Apply(BlipEmitter[] emitters, int emitterIndex)
             {
-                if (emitters[emitterIndex] != null)
-                {
-                    emitters[emitterIndex].Stop();
-                }
+                // TODO
             }
 
             public override void ApplyToSingleAudioSource(AudioSource audioSource)
             {
+                // TODO: Add self-exception.
                 audioSource.Stop();
             }
         }
 
 #if UNITY_EDITOR
-        [CustomPropertyDrawer(typeof(StopAllInEvent))]
-        public class BlipActionStopAllInEventInspector : PropertyDrawer
+        [CustomPropertyDrawer(typeof(GlobalStopAllEvents))]
+        public class BlipActionGlobalStopAllEventsInspector : PropertyDrawer
         {
             public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
             {
