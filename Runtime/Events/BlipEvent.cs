@@ -83,6 +83,8 @@ namespace Blip
 
             foreach (BlipEmitter emitter in emitters)
             {
+                if (emitter == null) continue;
+                
                 emitter.Reset();
                 emitter.GoToPosition(position);
                 emitter.SetCurrentEventName(name);
@@ -158,6 +160,7 @@ namespace Blip
 
         private void ApplySpatialToAudioSource(AudioSource audioSource)
         {
+            audioSource.rolloffMode = AudioRolloffMode.Custom;
             audioSource.spatialize = attenuationSettings.AttenuationAmount <= 0f;
             audioSource.spatialBlend = attenuationSettings.AttenuationAmount;
             audioSource.minDistance = attenuationSettings.MinDistance;
@@ -166,6 +169,7 @@ namespace Blip
 
         private void ApplySpatial2DToAudioSource(AudioSource audioSource)
         {
+            audioSource.rolloffMode = AudioRolloffMode.Custom;
             audioSource.spatialBlend = 0f;
             audioSource.spatialize = false;
         }

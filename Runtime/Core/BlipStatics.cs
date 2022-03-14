@@ -173,6 +173,26 @@ namespace Blip
             }
         }
 
+        public static void StopAllEvents(BlipEvent[] exceptions)
+        {
+            foreach (BlipEmitter emitter in emitters)
+            {
+                if (exceptions == null)
+                {
+                     emitter.Stop();
+                     continue;
+                }
+
+                foreach (BlipEvent exception in exceptions)
+                {
+                    if (emitter.GetCurrentEventName() != exception.name)
+                    {
+                        emitter.Stop();
+                    }
+                }
+            }
+        }
+
         public static void StopEvent(string eventName)
         {
             // Search through all active emitters for matching names and stops them all.
@@ -266,6 +286,10 @@ namespace Blip
             return activeListener.gameObject;
         }
 
+        // Looks through all emitters and returns one that's either not being used, or if all are 
+        // being used, returns the lowest priority emitter in order to interupt it. When checking
+        // priority, this will only return an emitter if one is found lower than the request 
+        // priority. The higher the priority value, the more priority it has.
         public static BlipEmitter RequestEmitter(int requestPriority)
         {
             if (!isInitialized)

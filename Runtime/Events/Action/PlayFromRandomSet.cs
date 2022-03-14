@@ -22,6 +22,8 @@ namespace Blip
              */ 
             public bool PreventDuplicatePicks = true;
 
+            public bool IsLooping;
+
             private int lastPick = -1;
 
             public override bool NeedsEmitter { get { return true; } }
@@ -33,6 +35,7 @@ namespace Blip
                 int randomPick = RollForIndex();
 
                 emitters[emitterIndex].PlayClip(Clips[randomPick]);
+                emitters[emitterIndex].GetSource().loop = IsLooping;
             }
 
             public override void ApplyToSingleAudioSource(AudioSource audioSource)
@@ -41,6 +44,7 @@ namespace Blip
 
                 audioSource.clip = Clips[randomPick];
                 audioSource.Play();
+                audioSource.loop = IsLooping;
             }
 
             private int RollForIndex()
@@ -85,8 +89,20 @@ namespace Blip
                 pos.x += 20f;
                 EditorGUI.LabelField(pos, "Prevent duplicate picks");
 
+                pos = new Rect(position.x - 15f, position.y + 30f, position.width, EditorGUI.GetPropertyHeight(prop));
+                prop = property.FindPropertyRelative("IsLooping");
+                EditorGUI.PropertyField
+                (
+                    pos, 
+                    prop, 
+                    label
+                );
+
+                pos.x += 20f;
+                EditorGUI.LabelField(pos, "Looping ");
+
                 prop = property.FindPropertyRelative("Clips");
-                pos = new Rect(position.x, position.y + 40f, position.width, EditorGUI.GetPropertyHeight(prop));
+                pos = new Rect(position.x, position.y + 60f, position.width, EditorGUI.GetPropertyHeight(prop));
             
                 //pos.x += 20f;
 
@@ -100,7 +116,7 @@ namespace Blip
 
                 EditorGUI.LabelField
                 (
-                    new Rect(position.x + 5f, position.y + 40f, position.width, 20f), 
+                    new Rect(position.x + 5f, position.y + 60f, position.width, 20f), 
                     "Clips to choose from"
                 );
 
@@ -113,10 +129,12 @@ namespace Blip
             {
                 SerializedProperty clipsProperty = property.FindPropertyRelative("Clips");
                 SerializedProperty preventDuplicatePicksProperty = property.FindPropertyRelative("PreventDuplicatePicks");
+                SerializedProperty loopProperty = property.FindPropertyRelative("IsLooping");
 
                 float totalHeight = 0;
                 totalHeight += EditorGUI.GetPropertyHeight(clipsProperty);
                 totalHeight += EditorGUI.GetPropertyHeight(preventDuplicatePicksProperty);
+                totalHeight += EditorGUI.GetPropertyHeight(loopProperty);
 
                 return totalHeight + 20f;
             }

@@ -13,16 +13,19 @@ namespace Blip
         [System.Serializable]
         public class GlobalStopAllEvents : BlipAction
         {
-            // TODO: Add exceptions.
+            public BlipEvent[] Exceptions;
 
             public override void Apply(BlipEmitter[] emitters, int emitterIndex)
             {
-                // TODO
+                // Emitters ignored.
+
+                Blip.Statics.StopAllEvents(Exceptions);
             }
 
             public override void ApplyToSingleAudioSource(AudioSource audioSource)
             {
-                // TODO: Add self-exception.
+                // Should we check for exceptions here?
+
                 audioSource.Stop();
             }
         }

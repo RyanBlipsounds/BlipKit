@@ -14,9 +14,16 @@ namespace Blip
         [System.Serializable]
         public class GlobalStopEvent : BlipAction
         {
+            public BlipEvent[] Events;
+
             public override void Apply(BlipEmitter[] emitters, int emitterIndex)
             {
-                // TODO
+                // Emitters ignored.
+
+                foreach (BlipEvent eventToStop in Events)
+                {
+                    Blip.Statics.StopEvent(eventToStop);
+                }
             }
 
             public override void ApplyToSingleAudioSource(AudioSource audioSource)
@@ -35,12 +42,24 @@ namespace Blip
             {
                 EditorGUI.BeginProperty(position, label, property);
 
+                EditorGUI.PropertyField
+                (
+                    new Rect(position.x, position.y, position.width, 20f), 
+                    property.FindPropertyRelative("Events"), 
+                    label
+                );
+
                 EditorGUI.EndProperty();
             }
 
             public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
             {
-                return 0f;
+                SerializedProperty eventsProperty = property.FindPropertyRelative("Events");
+
+                float totalHeight = 0;
+                totalHeight += EditorGUI.GetPropertyHeight(eventsProperty);
+
+                return totalHeight;
             }
         }
 #endif

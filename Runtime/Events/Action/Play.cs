@@ -14,6 +14,7 @@ namespace Blip
         public class Play : BlipAction
         {
             public AudioClip Clip;
+            public bool IsLooping;
 
             public override bool NeedsEmitter { get { return true; } }
 
@@ -22,6 +23,7 @@ namespace Blip
                 if (emitters[emitterIndex] != null)
                 {
                     emitters[emitterIndex].PlayClip(Clip);
+                    emitters[emitterIndex].GetSource().loop = IsLooping;
                 }
             }
 
@@ -29,6 +31,7 @@ namespace Blip
             {
                 audioSource.clip = Clip;
                 audioSource.Play();
+                audioSource.loop = IsLooping;
                 // Note: We may want this split up for more control from Actions.
             }
         }
@@ -47,6 +50,13 @@ namespace Blip
                     property.FindPropertyRelative("Clip"), 
                     label
                 );
+                
+                EditorGUI.PropertyField
+                (
+                    new Rect(position.x, position.y + 20f, position.width, 20f), 
+                    property.FindPropertyRelative("IsLooping"), 
+                    new GUIContent("Looping ")
+                );
 
                 EditorGUI.EndProperty();
             }
@@ -54,9 +64,11 @@ namespace Blip
             public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
             {
                 SerializedProperty clipProperty = property.FindPropertyRelative("Clip");
+                SerializedProperty loopProperty = property.FindPropertyRelative("IsLooping");
 
                 float totalHeight = 0;
                 totalHeight += EditorGUI.GetPropertyHeight(clipProperty);
+                totalHeight += EditorGUI.GetPropertyHeight(loopProperty);
 
                 return totalHeight;
             }
