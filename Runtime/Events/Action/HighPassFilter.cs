@@ -19,8 +19,6 @@ namespace Blip
             [Range(1.0f, 10.0f)]
             public float ResonanceQ = 1.0f;
 
-            public override bool NeedsEmitter { get { return true; } }
-
             public override void Apply(BlipEmitter[] emitters, int emitterIndex)
             {
                 if (!emitters[emitterIndex])

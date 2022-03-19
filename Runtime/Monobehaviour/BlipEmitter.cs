@@ -11,8 +11,18 @@ namespace Blip
         private bool isActive = false;
         private bool isRequested = false;
         private int activePriority = -1;
-
+        private float listenerDistance = 0f;
         private string currentEventName = null;
+
+        // Action-specfic.
+        private bool hasDistanceSpatial = false;
+        private float spatialMax;
+        private float distanceSpatialMin;
+        private float distanceSpatialMax;
+        private bool hasDistanceVolume = false;
+        private float volumeMax;
+        private float distanceVolumeMin;
+        private float distanceVolumeMax;
 
         [HideInInspector]
         public AudioHighPassFilter HighPassFilter;
@@ -25,6 +35,7 @@ namespace Blip
             audioSource = gameObject.AddComponent<AudioSource>();
             HighPassFilter = gameObject.AddComponent<AudioHighPassFilter>();
             LowPassFilter = gameObject.AddComponent<AudioLowPassFilter>();
+        
         }
 
         private void LateUpdate()
@@ -42,15 +53,86 @@ namespace Blip
                 // Inactive emitters are eligable to be reused.
                 isActive = false;
                 isRequested = false;
+                hasDistanceSpatial = false;
                 attachParent = null;
                 activePriority = 0;
+
+                return;
+            }
+
+            // Respond to listener distance, if necessary.
+            if (hasDistanceSpatial || hasDistanceVolume)
+            {
+                listenerDistance = Vector3.Distance
+                (
+                    transform.position, 
+                    Statics.GetListenerGameobject().transform.position
+                );
+
+                if (hasDistanceSpatial)
+                {
+                    UpdateDistanceSpatial();
+                }
+
+                if (hasDistanceVolume)
+                {
+                    UpdateDistanceVolume();
+                }
             }
         }
 
         private void OnDrawGizmos()
         {
             Gizmos.color = Color.blue;
-            Gizmos.DrawWireSphere(transform.position, 10f);
+            Gizmos.DrawWireSphere(transform.position, 0.5f);
+
+            if (hasDistanceSpatial)
+            {
+                Gizmos.color = Color.cyan;
+                Gizmos.DrawWireSphere(transform.position, distanceSpatialMin);
+
+                Gizmos.color = Color.blue;
+                Gizmos.DrawWireSphere(transform.position, distanceSpatialMax);
+            }
+
+            if (hasDistanceVolume)
+            {
+                Gizmos.color = Color.red;
+                Gizmos.DrawWireSphere(transform.position, distanceVolumeMin);
+
+                Gizmos.color = Color.yellow;
+                Gizmos.DrawWireSphere(transform.position, distanceVolumeMax);
+            }
+        }
+
+        private void UpdateDistanceVolume()
+        {
+            audioSource.volume = Mathf.Clamp
+            (
+                Mathf.Clamp01
+                (
+                    1f - 
+                    (listenerDistance - distanceVolumeMin) / 
+                    (distanceVolumeMax - distanceVolumeMin)
+                ),
+                0f, 
+                1f
+            ) * volumeMax;
+
+        }
+
+        private void UpdateDistanceSpatial()
+        {
+            audioSource.spatialBlend = Mathf.Clamp
+            (
+                Mathf.Clamp01
+                (
+                    (listenerDistance - distanceSpatialMin) / 
+                    (distanceSpatialMax - distanceSpatialMin)
+                ),
+                0f, 
+                1f
+            ) * spatialMax;
         }
 
         public bool Request(int priority)
@@ -119,6 +201,7 @@ namespace Blip
         {
             LowPassFilter.enabled = false;
             HighPassFilter.enabled = false;
+            hasDistanceSpatial = false;
         }
 
         public void SetVolume(float volume)
@@ -143,8 +226,6 @@ namespace Blip
             LowPassFilter.lowpassResonanceQ = resonanceQ;
 
             LowPassFilter.enabled = true;
-
-            Debug.Log("Cutoff is: " + LowPassFilter.cutoffFrequency);
         }
         
         public void SetHighPassFilter(float cutoffFrequency, float resonanceQ)
@@ -153,8 +234,24 @@ namespace Blip
             HighPassFilter.highpassResonanceQ = resonanceQ;
 
             HighPassFilter.enabled = true;
+        }
 
-            Debug.Log("Cutoff is: " + HighPassFilter.cutoffFrequency);
+        public void SetVolumeByDistance(float minRange, float maxRange)
+        {
+            hasDistanceVolume = true;
+
+            volumeMax = audioSource.volume;
+            distanceVolumeMin = minRange;
+            distanceVolumeMax = maxRange;
+        }
+
+        public void SetSpatialBlendByDistance(float minRange, float maxRange)
+        {
+            hasDistanceSpatial = true;
+
+            spatialMax = audioSource.spatialBlend;
+            distanceSpatialMin = minRange;
+            distanceSpatialMax = maxRange;
         }
 
         // Called from statics when an emitter plays anything and contains the relevent event name. 

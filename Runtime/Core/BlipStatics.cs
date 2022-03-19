@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Blip
+namespace Blip 
 {
     public static class Statics
     {
@@ -26,100 +26,106 @@ namespace Blip
             Debug.Log("[BlipKit] Initialized.");
         }
 
-        public static void PlayEvent2D(string eventName)
+        public static BlipEmitter[] PlayEvent2D(string eventName)
         {
             if (!isInitialized)
             {
                 // Needs to be initialized with global settings. Exits silently, but you may
                 // want a warning here.
-                return;
+                return null;
             }
 
             BlipEvent targetEvent = Bank.FindEvent(eventName);
             if (targetEvent != null)
             {
-                targetEvent.Play2D();
+                return targetEvent.Play2D();
             }
             else
             {
                 Debug.LogWarning("[BlipKit.Statics] Event \"" + eventName + "\" not found.");
             }
+
+            return null;
         }
 
-        public static void PlayEvent2D(BlipEvent eventReference)
+        public static BlipEmitter[] PlayEvent2D(BlipEvent eventReference)
         {
             if (!isInitialized)
             {
                 // Needs to be initialized with global settings. Exits silently, but you may
                 // want a warning here.
-                return;
+                return null;
             }
 
-            eventReference.Play2D();
+            return eventReference.Play2D();
         }
 
-        public static void PlayEventAtPosition(string eventName, Vector3 position)
+        public static BlipEmitter[] PlayEventAtPosition(string eventName, Vector3 position)
         {
             if (!isInitialized)
             {
                 // Needs to be initialized with global settings. Exits silently, but you may
                 // want a warning here.
-                return;
+                return null;
             }
 
             BlipEvent targetEvent = Bank.FindEvent(eventName);
             if (targetEvent != null)
             {
-                PlayEventAtPosition(targetEvent, position);
+                return PlayEventAtPosition(targetEvent, position);
             }
             else
             {
                 Debug.LogWarning("[BlipKit.Statics] Event \"" + eventName + "\" not found.");
             }
+
+            return null;
         }
 
-        public static void PlayEventAtPosition(BlipEvent eventReference, Vector3 position)
+        public static BlipEmitter[] PlayEventAtPosition(BlipEvent eventReference, Vector3 position)
         {
             if (!isInitialized)
             {
                 // Needs to be initialized with global settings. Exits silently, but you may
                 // want a warning here.
-                return;
+                return null;
             }
 
-            eventReference.PlayAtPosition(position);
+            return eventReference.PlayAtPosition(position);
         }
 
-        public static void PlayEventAttached(string eventName, GameObject objectToAttach)
+        public static BlipEmitter[] PlayEventAttached(string eventName, GameObject objectToAttach)
         {
             if (!isInitialized)
             {
                 // Needs to be initialized with global settings. Exits silently, but you may
                 // want a warning here.
-                return;
+                return null;
             }
 
             BlipEvent targetEvent = Bank.FindEvent(eventName);
             if (targetEvent != null)
             {
-                PlayEventAttached(targetEvent, objectToAttach);
+                return PlayEventAttached(targetEvent, objectToAttach);
             }
             else
             {
                 Debug.LogWarning("[BlipKit.Statics] Event \"" + eventName + "\" not found.");
             }
+
+            return null;
         }
 
-        public static void PlayEventAttached(BlipEvent eventReference, GameObject objectToAttach)
+        public static BlipEmitter[] PlayEventAttached(BlipEvent eventReference, GameObject objectToAttach)
         {
             if (!isInitialized)
             {
                 // Needs to be initialized with global settings. Exits silently, but you may
                 // want a warning here.
-                return;
+                return null;
             }
 
-            eventReference.PlayAttached(objectToAttach);
+            return eventReference.PlayAttached(objectToAttach);
         }
 
         // Returns all of the emitters that are active and match the provided target event.
@@ -137,7 +143,7 @@ namespace Blip
 
             foreach (BlipEmitter emitter in emitters)
             {
-                if (emitter.GetCurrentEventName() == eventName)
+                if (emitter.GetCurrentEventName() == eventName && emitter.IsActive())
                 {
                     result.Add(emitter);
                 }
@@ -151,6 +157,30 @@ namespace Blip
             // 'name' should be the BlipEvent (ScriptableObject) file name.
             return FindEmitters(eventReference.name);
         }
+
+        public static BlipEmitter FindEmitter(string eventName)
+        {
+            if (eventName == null)
+            {
+                return null;
+            }
+
+            foreach (BlipEmitter emitter in emitters)
+            {
+                if (emitter.GetCurrentEventName() == eventName && emitter.IsActive())
+                {
+                    return emitter;
+                }
+            }
+
+            return null;
+        }
+
+         public static BlipEmitter FindEmitter(BlipEvent eventReference)
+         {
+             // 'name' should be the BlipEvent (ScriptableObject) file name.
+            return FindEmitter(eventReference.name);
+         }
 
         // Stops all emitters. takes an optional string array with exception names.
         public static void StopAllEvents(string[] exceptions = null)

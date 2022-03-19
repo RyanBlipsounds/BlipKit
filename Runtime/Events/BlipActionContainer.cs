@@ -19,25 +19,28 @@ namespace Blip
             PlayFromRandomSet,
             GlobalStopEvent,
             GlobalStopAllEvents,
+            VolumeByDistance,
+            SpatialBlendByDistance,
             HighPassFilter,
             LowPassFilter
         }
 
-        public ActionType Type;
-        public Action.Play OptionsPlay;
-        public Action.PlayFromRandomSet OptionsPlayFromRandomSet;
-        public Action.GlobalStopEvent OptionsGlobalStopEvent;
-        public Action.GlobalStopAllEvents OptionsGlobalStopAllEvents;
-        public Action.HighPassFilter OptionsHighPassFilter;
-        public Action.LowPassFilter OptionsLowPassFilter;
+        public ActionType                    Type;
+        public Action.Play                   OptionsPlay;
+        public Action.PlayFromRandomSet      OptionsPlayFromRandomSet;
+        public Action.GlobalStopEvent        OptionsGlobalStopEvent;
+        public Action.GlobalStopAllEvents    OptionsGlobalStopAllEvents;
+        public Action.VolumeByDistance       OptionsVolumeByDistance;
+        public Action.SpatialBlendByDistance OptionsSpatialBlendByDistance;
+        public Action.HighPassFilter         OptionsHighPassFilter;
+        public Action.LowPassFilter          OptionsLowPassFilter;
 
         public void Apply(BlipEmitter[] emitters, ref int emitterIndex)
         {
             if (Type == ActionType.None) return;
 
-            GetAction().Apply(emitters, emitterIndex);
-
             if (NeedsEmitter()) emitterIndex++;
+            GetAction().Apply(emitters, emitterIndex);
         }
 
         public void ApplyToSingleAudioSource(AudioSource audioSource)
@@ -51,12 +54,14 @@ namespace Blip
         {
             switch (Type)
             {
-                case ActionType.Play: return OptionsPlay;
-                case ActionType.PlayFromRandomSet: return OptionsPlayFromRandomSet;
-                case ActionType.GlobalStopEvent: return OptionsGlobalStopEvent;
-                case ActionType.GlobalStopAllEvents: return OptionsGlobalStopAllEvents;
-                case ActionType.HighPassFilter: return OptionsHighPassFilter;
-                case ActionType.LowPassFilter: return OptionsLowPassFilter;
+                case ActionType.Play:                   return OptionsPlay;
+                case ActionType.PlayFromRandomSet:      return OptionsPlayFromRandomSet;
+                case ActionType.GlobalStopEvent:        return OptionsGlobalStopEvent;
+                case ActionType.GlobalStopAllEvents:    return OptionsGlobalStopAllEvents;
+                case ActionType.VolumeByDistance:       return OptionsVolumeByDistance;
+                case ActionType.SpatialBlendByDistance: return OptionsSpatialBlendByDistance;
+                case ActionType.HighPassFilter:         return OptionsHighPassFilter;
+                case ActionType.LowPassFilter:          return OptionsLowPassFilter;
             }
 
             return null;

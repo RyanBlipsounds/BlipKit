@@ -37,6 +37,14 @@ namespace Blip
                     totalHeight += EditorGUI.GetPropertyHeight(property.FindPropertyRelative("OptionsGlobalStopAllEvents"));
                     break;
 
+                case BlipActionContainer.ActionType.VolumeByDistance: 
+                    totalHeight += EditorGUI.GetPropertyHeight(property.FindPropertyRelative("OptionsVolumeByDistance"));
+                    break;
+
+                case BlipActionContainer.ActionType.SpatialBlendByDistance: 
+                    totalHeight += EditorGUI.GetPropertyHeight(property.FindPropertyRelative("OptionsSpatialBlendByDistance"));
+                    break;
+
                 case BlipActionContainer.ActionType.HighPassFilter: 
                     totalHeight += EditorGUI.GetPropertyHeight(property.FindPropertyRelative("OptionsHighPassFilter"));
                     break;
@@ -90,6 +98,14 @@ namespace Blip
                     Draw_GlobalStopAllEvents(position, property);
                     break;
 
+                case BlipActionContainer.ActionType.VolumeByDistance:
+                    Draw_VolumeByDistance(position, property);
+                    break;
+
+                case BlipActionContainer.ActionType.SpatialBlendByDistance:
+                    Draw_SpatialBlendByDistance(position, property);
+                    break;
+
                 case BlipActionContainer.ActionType.HighPassFilter:
                     Draw_HighPassFilter(position, property);
                     break;
@@ -141,6 +157,30 @@ namespace Blip
         private void Draw_GlobalStopAllEvents(Rect position, SerializedProperty property)
         {
             position.height += 10f;
+        }
+
+        private void Draw_VolumeByDistance(Rect position, SerializedProperty property)
+        {
+            position.height += 60f;
+
+            EditorGUI.PropertyField
+            (
+                new Rect(position.x, position.y + 20f, position.width, 20f), 
+                property.FindPropertyRelative("OptionsVolumeByDistance"), 
+                GUIContent.none
+            );
+        }
+
+        private void Draw_SpatialBlendByDistance(Rect position, SerializedProperty property)
+        {
+            position.height += 60f;
+
+            EditorGUI.PropertyField
+            (
+                new Rect(position.x, position.y + 20f, position.width, 20f), 
+                property.FindPropertyRelative("OptionsSpatialBlendByDistance"), 
+                GUIContent.none
+            );
         }
 
         private void Draw_HighPassFilter(Rect position, SerializedProperty property)

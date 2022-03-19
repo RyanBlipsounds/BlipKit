@@ -41,12 +41,12 @@ namespace Blip
 
         #region Public Methods
 
-        public void Play2D()
+        public BlipEmitter[] Play2D()
         {
-            Play2D(Volume);
+            return Play2D(Volume);
         }
         
-        public void Play2D(float volume)
+        public BlipEmitter[] Play2D(float volume)
         {
             BlipEmitter[] emitters = Statics.RequestEmitters(GetEmitterCount(), priority);
 
@@ -57,12 +57,6 @@ namespace Blip
                 emitter.SetCurrentEventName(name);
             }
 
-            int emitterIndex = 0;
-            foreach (BlipActionContainer action in Actions)
-            {
-                action.Apply(emitters, ref emitterIndex);
-            }
-
             Statics.SetEmitterVolume(emitters, volume);
             Statics.SetEmitterPitch(emitters, PitchAdjust);
 
@@ -70,14 +64,22 @@ namespace Blip
             {
                 ApplySpatial2DToAudioSource(emitters[i].GetSource());
             }
+
+            int emitterIndex = -1;
+            foreach (BlipActionContainer action in Actions)
+            {
+                action.Apply(emitters, ref emitterIndex);
+            }
+
+            return emitters;
         }
 
-        public void PlayAtPosition(Vector3 position)
+        public BlipEmitter[] PlayAtPosition(Vector3 position)
         {            
-            PlayAtPosition(position, Volume);
+            return PlayAtPosition(position, Volume);
         }
 
-        public void PlayAtPosition(Vector3 position, float volume)
+        public BlipEmitter[] PlayAtPosition(Vector3 position, float volume)
         {
             BlipEmitter[] emitters = Statics.RequestEmitters(GetEmitterCount(), priority);
 
@@ -90,12 +92,6 @@ namespace Blip
                 emitter.SetCurrentEventName(name);
             }
 
-            int emitterIndex = 0;
-            foreach (BlipActionContainer action in Actions)
-            {
-                action.Apply(emitters, ref emitterIndex);
-            }
-
             Statics.SetEmitterVolume(emitters, volume);
             Statics.SetEmitterPitch(emitters, PitchAdjust);
 
@@ -103,14 +99,22 @@ namespace Blip
             {
                 ApplySpatialToAudioSource(emitters[i].GetSource());
             }
+
+            int emitterIndex = -1;
+            foreach (BlipActionContainer action in Actions)
+            {
+                action.Apply(emitters, ref emitterIndex);
+            }
+
+            return emitters;
         }
 
-        public void PlayAttached(GameObject objectToAttach)
+        public BlipEmitter[] PlayAttached(GameObject objectToAttach)
         {
-            PlayAttached(objectToAttach, Volume);
+            return PlayAttached(objectToAttach, Volume);
         }
 
-        public void PlayAttached(GameObject objectToAttach, float volume)
+        public BlipEmitter[] PlayAttached(GameObject objectToAttach, float volume)
         {
             BlipEmitter[] emitters = Statics.RequestEmitters(GetEmitterCount(), priority);
 
@@ -121,12 +125,6 @@ namespace Blip
                 emitter.SetCurrentEventName(name);
             }
 
-            int emitterIndex = 0;
-            foreach (BlipActionContainer action in Actions)
-            {
-                action.Apply(emitters, ref emitterIndex);
-            }
-
             Statics.SetEmitterVolume(emitters, volume);
             Statics.SetEmitterPitch(emitters, PitchAdjust);
 
@@ -134,6 +132,14 @@ namespace Blip
             {
                 ApplySpatialToAudioSource(emitters[i].GetSource());
             }
+
+            int emitterIndex = -1;
+            foreach (BlipActionContainer action in Actions)
+            {
+                action.Apply(emitters, ref emitterIndex);
+            }
+
+            return emitters;
         }
 
         public void PlayOnSingleSource(AudioSource audioSource)
@@ -143,15 +149,15 @@ namespace Blip
 
         public void PlayOnSingleSource(AudioSource audioSource, float volume)
         {
-            foreach (BlipActionContainer action in Actions)
-            {
-                action.ApplyToSingleAudioSource(audioSource);
-            }
-
             audioSource.volume = volume;
             audioSource.pitch = (float)Statics.PitchAsUnityRange(PitchAdjust);
 
             ApplySpatial2DToAudioSource(audioSource);
+
+            foreach (BlipActionContainer action in Actions)
+            {
+                action.ApplyToSingleAudioSource(audioSource);
+            }
         }
 
         #endregion
