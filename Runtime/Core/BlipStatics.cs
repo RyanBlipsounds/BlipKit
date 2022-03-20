@@ -187,7 +187,7 @@ namespace Blip
         {
             foreach (BlipEmitter emitter in emitters)
             {
-                if (exceptions == null)
+                if (exceptions == null && emitter.IsActive())
                 {
                      emitter.Stop();
                      continue;
@@ -195,7 +195,7 @@ namespace Blip
 
                 foreach (string exception in exceptions)
                 {
-                    if (emitter.GetCurrentEventName() != exception)
+                    if (emitter.GetCurrentEventName() != exception && emitter.IsActive())
                     {
                         emitter.Stop();
                     }
@@ -207,7 +207,7 @@ namespace Blip
         {
             foreach (BlipEmitter emitter in emitters)
             {
-                if (exceptions == null)
+                if (exceptions == null && emitter.IsActive())
                 {
                      emitter.Stop();
                      continue;
@@ -215,7 +215,7 @@ namespace Blip
 
                 foreach (BlipEvent exception in exceptions)
                 {
-                    if (emitter.GetCurrentEventName() != exception.name)
+                    if (emitter.GetCurrentEventName() != exception.name && emitter.IsActive())
                     {
                         emitter.Stop();
                     }
@@ -231,7 +231,7 @@ namespace Blip
             // global action it can search for relevant emitters this way.
             foreach (BlipEmitter emitter in emitters)
             {
-                if (emitter.GetCurrentEventName() == eventName)
+                if (emitter.GetCurrentEventName() == eventName && emitter.IsActive())
                 {
                     emitter.Stop();
                 }
@@ -240,9 +240,77 @@ namespace Blip
 
         public static void StopEvent(BlipEvent eventReference)
         {
-            // 'name' should be the BlipEvent (ScriptableObject) file name.
+            // 'name' should be the BlipEvent (ScriptableObject) file name.s
             StopEvent(eventReference.name);
         }
+
+        public static void PauseEvent(string eventName)
+        {
+            // Pauses all currently-active events with the name provided.
+            foreach (BlipEmitter emitter in emitters)
+            {
+                if (emitter.GetCurrentEventName() == eventName && emitter.IsActive())
+                {
+                    emitter.Pause();
+                }
+            }
+        }
+
+        public static void PauseEvent(BlipEvent eventReference)
+        {
+            PauseEvent(eventReference.name);
+        }
+
+        public static void UnpauseEvent(string eventName)
+        {
+            // Unpauses all currently-active events with the name provided.
+            foreach (BlipEmitter emitter in emitters)
+            {
+                if (emitter.GetCurrentEventName() == eventName)
+                {
+                    emitter.Unpause();
+                }
+            }
+        }
+
+        public static void UnpauseEvent(BlipEvent eventReference)
+        {
+            UnpauseEvent(eventReference.name);
+        }        
+
+        public static void MuteEvent(string eventName)
+        {
+            // Mutes all currently-active events with the name provided.
+            foreach (BlipEmitter emitter in emitters)
+            {
+                if (emitter.GetCurrentEventName() == eventName && emitter.IsActive())
+                {
+                    emitter.Mute();
+                }
+            }
+        }
+
+        public static void MuteEvent(BlipEvent eventReference)
+        {
+            MuteEvent(eventReference.name);
+        }
+
+        public static void UnmuteEvent(string eventName)
+        {
+            // Unmutes all currently-active events with the name provided.
+            foreach (BlipEmitter emitter in emitters)
+            {
+                if (emitter.GetCurrentEventName() == eventName && emitter.IsActive())
+                {
+                    emitter.Unmute();
+                }
+            }
+        }
+
+        public static void UnmuteEvent(BlipEvent eventReference)
+        {
+            UnmuteEvent(eventReference.name);
+        } 
 
         public static void SetEmitterVolume(BlipEmitter[] emitters, float volume)
         {

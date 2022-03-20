@@ -9,6 +9,7 @@ namespace Blip
         private AudioSource audioSource;
         private Transform attachParent;
         private bool isActive = false;
+        private bool isPaused = false;
         private bool isRequested = false;
         private int activePriority = -1;
         private float listenerDistance = 0f;
@@ -48,11 +49,12 @@ namespace Blip
                 transform.localRotation = attachParent.rotation;
             }
 
-            if (isActive && !audioSource.isPlaying)
+            if (isActive && !audioSource.isPlaying && !isPaused)
             {
                 // Inactive emitters are eligable to be reused.
                 isActive = false;
                 isRequested = false;
+                isPaused = false;
                 hasDistanceSpatial = false;
                 attachParent = null;
                 activePriority = 0;
@@ -188,8 +190,35 @@ namespace Blip
 
         public void Stop()
         {
+            // TODO: Support fading.
             audioSource.Stop();
             isActive = false;
+        }
+
+        public void Pause()
+        {
+            // TODO: Support fading.
+            audioSource.Pause();
+            isPaused = true;
+        }
+
+        public void Unpause()
+        {
+            // TODO: Support fading.
+            audioSource.UnPause();
+            isPaused = false;
+        }
+
+        public void Mute()
+        {
+            // TODO: Support fading.
+            audioSource.mute = true;
+        }
+
+        public void Unmute()
+        {
+            // TODO: Support fading.
+            audioSource.mute = false;
         }
 
         public AudioSource GetSource()
@@ -202,6 +231,7 @@ namespace Blip
             LowPassFilter.enabled = false;
             HighPassFilter.enabled = false;
             hasDistanceSpatial = false;
+            isPaused = false;
         }
 
         public void SetVolume(float volume)
