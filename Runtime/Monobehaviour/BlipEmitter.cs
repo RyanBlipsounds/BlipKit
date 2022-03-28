@@ -232,6 +232,7 @@ namespace Blip
             HighPassFilter.enabled = false;
             hasDistanceSpatial = false;
             isPaused = false;
+            audioSource.outputAudioMixerGroup = null;
         }
 
         public void SetVolume(float volume)
@@ -282,6 +283,11 @@ namespace Blip
             spatialMax = audioSource.spatialBlend;
             distanceSpatialMin = minRange;
             distanceSpatialMax = maxRange;
+        }
+
+        public void SetMixerGroup(UnityEngine.Audio.AudioMixerGroup mixerGroup)
+        {
+            audioSource.outputAudioMixerGroup = mixerGroup;
         }
 
         // Called from statics when an emitter plays anything and contains the relevent event name. 

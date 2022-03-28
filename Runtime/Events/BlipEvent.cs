@@ -50,6 +50,12 @@ namespace Blip
         {
             BlipEmitter[] emitters = Statics.RequestEmitters(GetEmitterCount(), priority);
 
+            if (emitters == null)
+            {
+                // Blocked due to max voices.
+                return null;
+            }
+
             foreach (BlipEmitter emitter in emitters)
             {
                 emitter.Reset();
@@ -75,7 +81,7 @@ namespace Blip
         }
 
         public BlipEmitter[] PlayAtPosition(Vector3 position)
-        {            
+        {
             return PlayAtPosition(position, Volume);
         }
 
@@ -83,13 +89,19 @@ namespace Blip
         {
             BlipEmitter[] emitters = Statics.RequestEmitters(GetEmitterCount(), priority);
 
+            if (emitters == null)
+            {
+                // Blocked due to max voices.
+                return null;
+            }
+
             foreach (BlipEmitter emitter in emitters)
             {
-                if (emitter == null) continue;
-                
                 emitter.Reset();
                 emitter.GoToPosition(position);
                 emitter.SetCurrentEventName(name);
+                emitter.SetVolume(volume);
+                emitter.SetPitch(PitchAdjust);
             }
 
             Statics.SetEmitterVolume(emitters, volume);
@@ -117,6 +129,12 @@ namespace Blip
         public BlipEmitter[] PlayAttached(GameObject objectToAttach, float volume)
         {
             BlipEmitter[] emitters = Statics.RequestEmitters(GetEmitterCount(), priority);
+
+            if (emitters == null)
+            {
+                // Blocked due to max voices.
+                return null;
+            }
 
             foreach (BlipEmitter emitter in emitters)
             {
@@ -166,6 +184,12 @@ namespace Blip
 
         private void ApplySpatialToAudioSource(AudioSource audioSource)
         {
+            if (audioSource == null)
+            {
+                Debug.Log("NULL AUDIOSOURCE");
+                return;
+            }
+
             audioSource.rolloffMode = AudioRolloffMode.Custom;
             audioSource.spatialize = attenuationSettings.AttenuationAmount <= 0f;
             audioSource.spatialBlend = attenuationSettings.AttenuationAmount;
@@ -175,6 +199,12 @@ namespace Blip
 
         private void ApplySpatial2DToAudioSource(AudioSource audioSource)
         {
+            if (audioSource == null)
+            {
+                Debug.Log("NULL AUDIOSOURCE");
+                return;
+            }
+
             audioSource.rolloffMode = AudioRolloffMode.Custom;
             audioSource.spatialBlend = 0f;
             audioSource.spatialize = false;

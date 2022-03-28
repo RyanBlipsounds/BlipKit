@@ -463,6 +463,11 @@ namespace Blip
             for (int i=0; i<emitterCount; i++)
             {
                 outEmitters[i] = RequestEmitter(requestPriority);
+                if (outEmitters[i] == null)
+                {
+                    // Blocked due to max voices.
+                    return null;
+                }
             }
 
             return outEmitters;
