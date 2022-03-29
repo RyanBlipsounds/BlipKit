@@ -19,25 +19,30 @@ namespace Blip
             public float MaxDistance = 300f;
         };
 
-        public int priority = 1;
+        [SerializeField]
+        private int priority = 1;
 
         [Space(10)]
 
-        public BlipActionContainer[] Actions;
+        [SerializeField]
+        private BlipActionContainer[] Actions;
 
         [Space(10)]
         [Header("Modifiers")]
 
+        [SerializeField]
         [Range(0f, 1f)]
-        public float Volume = 1f;
+        private float Volume = 1f;
 
+        [SerializeField]
         [Tooltip("Pitch adjustment in cents of a semitone.")]
         [Range(-2400, 2400)]
-        public int PitchAdjust = 0;
+        private int PitchAdjust = 0;
 
         [Space(10)]
 
-        public AttenuationSettings attenuationSettings;
+        [SerializeField]
+        private AttenuationSettings attenuationSettings;
 
         #region Public Methods
 
@@ -130,7 +135,7 @@ namespace Blip
         {
             BlipEmitter[] emitters = Statics.RequestEmitters(GetEmitterCount(), priority);
 
-            if (emitters == null)
+            if (emitters == null) 
             {
                 // Blocked due to max voices.
                 return null;
