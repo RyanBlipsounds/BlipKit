@@ -170,6 +170,7 @@ namespace Blip
         private float tickTimer = 0f;
         private float activeTimer = 0f;
         private Vector3 targetEmitterPosition;
+        private Vector3 currentEmitterPositionNoOffset;
         private float[] vertexDistances;
         private List<Tri> candidateTris = new List<Tri>();
         private float closestVertexDistance;
@@ -272,7 +273,7 @@ namespace Blip
             // Smooth follow the target emitter position.
             Vector3 resultEmitterPosition = Vector3.Lerp
             (
-                EmitterObject.transform.position, 
+                currentEmitterPositionNoOffset, 
                 targetEmitterPosition, 
                 TrackingSpeed * Time.deltaTime
             );
@@ -288,8 +289,9 @@ namespace Blip
                     resultEmitterPosition.y = 0f;
                     break;
             }
-
-            EmitterObject.transform.position = resultEmitterPosition + (Vector3.up * heightOffset);
+            
+            currentEmitterPositionNoOffset = resultEmitterPosition;
+            EmitterObject.transform.position = currentEmitterPositionNoOffset + (Vector3.up * heightOffset);
         }
 
         private void FixedUpdate()
