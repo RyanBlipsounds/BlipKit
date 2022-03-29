@@ -232,7 +232,7 @@ namespace Blip
             HighPassFilter.enabled = false;
             hasDistanceSpatial = false;
             isPaused = false;
-            audioSource.outputAudioMixerGroup = null;
+            // Mixer group doesnt need to be reset.
         }
 
         public void SetVolume(float volume)
@@ -287,6 +287,8 @@ namespace Blip
 
         public void SetMixerGroup(UnityEngine.Audio.AudioMixerGroup mixerGroup)
         {
+            // Mixer group doesnt need to be reset because if it's null on a new event, that 
+            // null is passed on here.
             audioSource.outputAudioMixerGroup = mixerGroup;
         }
 

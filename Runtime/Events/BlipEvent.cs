@@ -42,6 +42,11 @@ namespace Blip
         [Space(10)]
 
         [SerializeField]
+        private UnityEngine.Audio.AudioMixerGroup MixerGroup = null;
+
+        [Space(10)]
+
+        [SerializeField]
         private AttenuationSettings attenuationSettings;
 
         #region Public Methods
@@ -66,14 +71,10 @@ namespace Blip
                 emitter.Reset();
                 emitter.AttachTo(Statics.GetListenerGameobject());
                 emitter.SetCurrentEventName(name);
-            }
-
-            Statics.SetEmitterVolume(emitters, volume);
-            Statics.SetEmitterPitch(emitters, PitchAdjust);
-
-            for (int i=0; i<emitters.Length; i++)
-            {
-                ApplySpatial2DToAudioSource(emitters[i].GetSource());
+                emitter.SetVolume(volume);
+                emitter.SetPitch(PitchAdjust);
+                emitter.SetMixerGroup(MixerGroup);
+                ApplySpatial2DToAudioSource(emitter.GetSource());
             }
 
             int emitterIndex = -1;
@@ -107,14 +108,8 @@ namespace Blip
                 emitter.SetCurrentEventName(name);
                 emitter.SetVolume(volume);
                 emitter.SetPitch(PitchAdjust);
-            }
-
-            Statics.SetEmitterVolume(emitters, volume);
-            Statics.SetEmitterPitch(emitters, PitchAdjust);
-
-            for (int i=0; i<emitters.Length; i++)
-            {
-                ApplySpatialToAudioSource(emitters[i].GetSource());
+                emitter.SetMixerGroup(MixerGroup);
+                ApplySpatial2DToAudioSource(emitter.GetSource());
             }
 
             int emitterIndex = -1;
@@ -146,14 +141,10 @@ namespace Blip
                 emitter.Reset();
                 emitter.AttachTo(objectToAttach);
                 emitter.SetCurrentEventName(name);
-            }
-
-            Statics.SetEmitterVolume(emitters, volume);
-            Statics.SetEmitterPitch(emitters, PitchAdjust);
-
-            for (int i=0; i<emitters.Length; i++)
-            {
-                ApplySpatialToAudioSource(emitters[i].GetSource());
+                emitter.SetVolume(volume);
+                emitter.SetPitch(PitchAdjust);
+                emitter.SetMixerGroup(MixerGroup);
+                ApplySpatial2DToAudioSource(emitter.GetSource());
             }
 
             int emitterIndex = -1;
